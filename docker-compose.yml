@@ -1,0 +1,27 @@
+services:
+  server:
+    build: ./server
+    container_name: express-server
+    ports:
+      - "4000:4000"
+    networks:
+      - fullstack-net
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./client
+      args:
+        VITE_API_URL: http://localhost:4000
+    container_name: react-client
+    ports:
+      - "3000:3000"
+    networks:
+      - fullstack-net
+    depends_on:
+      - server
+    restart: unless-stopped
+
+networks:
+  fullstack-net:
+    driver: bridge
