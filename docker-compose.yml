@@ -4,6 +4,10 @@ services:
     container_name: express-server
     ports:
       - "4000:4000"
+    environment:
+      # Frontend origin(s) allowed to call this API (comma-separated).
+      # Value comes from the .env file next to this docker-compose.yml.
+      - CLIENT_URL=${CLIENT_URL}
     networks:
       - fullstack-net
     restart: unless-stopped
@@ -12,7 +16,9 @@ services:
     build:
       context: ./client
       args:
-        VITE_API_URL: http://localhost:4000
+        # Public URL of the API, baked into the frontend at BUILD time.
+        # Vite only exposes env vars during build, so this must be an ARG.
+        VITE_API_URL: ${SERVER_URL}
     container_name: react-client
     ports:
       - "3000:3000"
